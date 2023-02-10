@@ -1,6 +1,6 @@
 # Simple Flask web application with a scraper functionality
 
-## **[Website URL](http://crimestoppers-uk-most-wanted.herokuapp.com/ "Website URL")**
+## **[Website URL](https://crimestoppers-uk-most-wanted.herokuapp.com/ "Website URL")**
 
 ## Description:
 - Scraper created with Selenium Webdriver
