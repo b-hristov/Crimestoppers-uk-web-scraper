@@ -22,18 +22,15 @@
             </button>
         </div>
     </div>
-    <p class="{% if not total_entries %}hidden{% endif %}" id="count">Total entries found: <b>{{ total_entries }}</b>
+    <p id="count" class="{% if not total_entries %}hidden{% endif %}" id="count">Total entries found:
+        <b>{{ total_entries }}</b>
     </p>
-    <div id="spinner" style="display: none">
-        <p>Collecting data, please wait.</p>
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-            <br>
-            <br>
-        </div>
+    <p id="loading-message" class="hidden">Collecting data, please wait.
+    <div id="progress-bar" class="hidden">
+        <div class="progress-bar-filled" id="progress-bar-fill"></div>
     </div>
+    </p>
+
     <table class="table {% if not json_data %}hidden{% endif %}" id="scraped-content" style="text-align: center;">
         <thead>
         <tr class="headings-style">
@@ -47,24 +44,24 @@
         </thead>
         <tbody>
         {% for person in json_data %}
-        {% for key, value in person.items() %}
-        <tr>
-            <td><img alt="Photo URL" src="{{value[0]['Photo URL']}}" style="width: 100px; height: 100px;"></td>
-            <td>{{ key }}</td>
-            <td>{{ value[0]['Sex'] }}</td>
-            <td>{{ value[0]['Age'] }}</td>
-            <td>{{ value[0]['Crime type'] }}</td>
-            <td><a class="btn btn-outline-primary" href="/{{key}}/" role="button"><b>Click here</b></a></td>
+            {% for key, value in person.items() %}
+                <tr>
+                <td><img alt="Photo URL" src="{{ value[0]['Photo URL'] }}" style="width: 100px; height: 100px;"></td>
+                <td>{{ key }}</td>
+                <td>{{ value[0]['Sex'] }}</td>
+                <td>{{ value[0]['Age'] }}</td>
+                <td>{{ value[0]['Crime type'] }}</td>
+                <td><a class="btn btn-outline-primary" href="/{{ key }}/" role="button"><b>Click here</b></a></td>
             {% endfor %}
-            {% endfor %}
+        {% endfor %}
         </tbody>
     </table>
     <br>
     <ul class="pagination">
         {% for i in range(1, pages + 1) %}
-        <li class="page-item {% if i == page %} active {% endif %}">
-            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-        </li>
+            <li class="page-item {% if i == page %} active {% endif %}">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
         {% endfor %}
     </ul>
     <br>
