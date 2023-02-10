@@ -1,4 +1,26 @@
 // // Function to trigger the scraper
+// document.getElementById("run-scraper-button").addEventListener("click", function () {
+//     // Show the progress bar
+//     document.getElementById("spinner").style.display = "block";
+//
+//     // Make an AJAX request to the endpoint
+//     var xhr = new XMLHttpRequest();
+//     xhr.open("POST", "/run_scraper/", true);
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+//             var response = JSON.parse(xhr.responseText);
+//             if (response.status === "Scraping complete") {
+//                 // Hide the progress bar
+//                 document.getElementById("spinner").style.display = "none";
+//
+//                 // Reload the page
+//                 location.reload();
+//             }
+//         }
+//     };
+//     xhr.send();
+// });
+
 document.getElementById("run-scraper-button").addEventListener("click", function () {
   document.getElementById("spinner").style.display = "block";
   var xhr = new XMLHttpRequest();
