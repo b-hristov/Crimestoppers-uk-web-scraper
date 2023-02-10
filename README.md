@@ -1,5 +1,7 @@
 # Simple Flask web application with a scraper functionality
+
 ## **[Website URL](http://crimestoppers-uk-most-wanted.herokuapp.com/ "Website URL")**
+
 ## Description:
 - Scraper created with Selenium Webdriver
 - Stores the collected files in AWS S3
@@ -14,14 +16,14 @@
 Sample request for '/api/wanted-persons/' endpoint:
 ```json
 {
-    "token": <token>
+    "token": "<token>"
 }
 ```
 
 Sample request for '/api/wanted-persons/search/' endpoint:
 ```json
 {
-    "token": <token>,
-    "SOI": <name>
+    "token": "<token>",
+    "SOI": "<name>"
 }
 ```
