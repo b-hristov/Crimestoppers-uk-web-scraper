@@ -6,20 +6,24 @@
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
-    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="/static/favicon.ico" rel="shortcut icon">
 </head>
 <body>
 <h1 class="text-primary text-uppercase font-weight-bold">Crime stoppers UK - Wanted persons</h1>
 <div class="container" style="width: 70%;">
     <div id="buttons">
         <div id="scr-btn">
-            <button type="button" id="run-scraper-button" class="btn btn-outline-success"><b>Update entries</b></button>
+            <button class="btn btn-outline-success" id="run-scraper-button" type="button"><b>Update entries</b></button>
         </div>
         <div id="del-btn">
-            <button type="button" id="erase-all-entries" class="btn btn-outline-danger {% if not json_data %}hidden{% endif %}"><b>Erase all entries</b></button>
+            <button class="btn btn-outline-danger {% if not json_data %}hidden{% endif %}" id="erase-all-entries"
+                    type="button">
+                <b>Erase all entries</b>
+            </button>
         </div>
     </div>
-    <p id="count" class="{% if not total_entries %}hidden{% endif %}">Total entries found: <b>{{ total_entries }}</b></p>
+    <p class="{% if not total_entries %}hidden{% endif %}" id="count">Total entries found: <b>{{ total_entries }}</b>
+    </p>
     <div id="spinner" style="display: none">
         <p>Collecting data, please wait.</p>
         <div class="spinner">
@@ -30,7 +34,7 @@
             <br>
         </div>
     </div>
-    <table id="scraped-content" class="table {% if not json_data %}hidden{% endif %}" style="text-align: center;">
+    <table class="table {% if not json_data %}hidden{% endif %}" id="scraped-content" style="text-align: center;">
         <thead>
         <tr class="headings-style">
             <th>Suspect photo</th>
@@ -50,7 +54,7 @@
             <td>{{ value[0]['Sex'] }}</td>
             <td>{{ value[0]['Age'] }}</td>
             <td>{{ value[0]['Crime type'] }}</td>
-            <td><a href="/{{key}}/" role="button" class="btn btn-outline-primary"><b>Click here</b></a></td>
+            <td><a class="btn btn-outline-primary" href="/{{key}}/" role="button"><b>Click here</b></a></td>
             {% endfor %}
             {% endfor %}
         </tbody>

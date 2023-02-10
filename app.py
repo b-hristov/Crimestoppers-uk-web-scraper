@@ -1,11 +1,11 @@
+import os
 import subprocess
 from math import ceil
-import os
 from threading import Thread
 
+import boto3
 from flask import *
 from pymongo import MongoClient
-import boto3
 
 app = Flask(__name__, static_folder="static")
 
@@ -19,7 +19,6 @@ collection = db["wanted-persons"]
 s3 = boto3.client("s3")
 bucket = "scraped-data-most-wanted"
 file_name = "scraped_data.json"
-
 
 token_1 = os.environ.get("TOKEN_1")
 token_2 = os.environ.get("TOKEN_2")
