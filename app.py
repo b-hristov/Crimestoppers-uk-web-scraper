@@ -1,5 +1,6 @@
 import os
 import subprocess
+from datetime import datetime
 from math import ceil
 from threading import Thread
 
@@ -28,9 +29,13 @@ token_5 = os.environ.get("TOKEN_5")
 AVAILABLE_TOKENS = [token_1, token_2, token_3, token_4, token_5]
 ENTRIES_PER_PAGE = 10
 
+scraping_in_progress = False
+date_time_last_update = ""
+
 
 @app.route('/', methods=['GET'])
 def render_all_persons_data():
+    global date_time_last_update
     all_documents_in_collection = collection.find({}, {'_id': 0})
 
     items = list(all_documents_in_collection)
@@ -41,7 +46,14 @@ def render_all_persons_data():
     start = (page - 1) * ENTRIES_PER_PAGE
     end = start + ENTRIES_PER_PAGE
     json_data = items[start:end]
-    return render_template('index.html', json_data=json_data, page=page, pages=pages, total_entries=total_entries)
+    return render_template(
+        'index.html',
+        json_data=json_data,
+        page=page,
+        pages=pages,
+        total_entries=total_entries,
+        last_update=date_time_last_update
+    )
 
 
 @app.route('/<string:name>/', methods=['GET'])
@@ -86,11 +98,9 @@ def search_for_person():
     return {"Message": "SOI not found!"}
 
 
-scraping_in_progress = False
-
-
 def run_scraper():
     global scraping_in_progress
+    global date_time_last_update
     scraping_in_progress = True
     subprocess.run(['python', 'crimestoppers_uk_scraper.py'])
 
@@ -103,6 +113,8 @@ def run_scraper():
     collection.insert_many(wanted_persons)
 
     scraping_in_progress = False
+    date_and_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    date_time_last_update = date_and_time
 
 
 @app.route("/run_scraper/", methods=["POST"])

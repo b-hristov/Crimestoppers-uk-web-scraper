@@ -22,15 +22,17 @@
             </button>
         </div>
     </div>
-    <p id="count" class="{% if not total_entries %}hidden{% endif %}" id="count">Total entries found:
+    <p id="count" class="{% if not total_entries %}hidden{% endif %}">Total entries found:
         <b>{{ total_entries }}</b>
+    </p>
+    <p id="datetime" class="{% if not total_entries %}hidden{% endif %}">Last update:
+        <b>{{ last_update }}</b>
     </p>
     <p id="loading-message" class="hidden">Collecting data, please wait.
     <div id="progress-bar" class="hidden">
         <div class="progress-bar-filled" id="progress-bar-fill"></div>
     </div>
     </p>
-
     <table class="table {% if not json_data %}hidden{% endif %}" id="scraped-content" style="text-align: center;">
         <thead>
         <tr class="headings-style">

@@ -9,6 +9,7 @@ let counter = 0
 // Function to trigger the scraper
 document.getElementById("run-scraper-button").addEventListener("click", function () {
     document.getElementById("count").style.display = "none";
+    document.getElementById("datetime").style.display = "none";
     document.getElementById("loading-message").style.display = "block";
     updateProgress(counter);
     document.getElementById("progress-bar").style.display = "block";
@@ -28,13 +29,13 @@ document.getElementById("run-scraper-button").addEventListener("click", function
                                 location.reload();
                             }, 2000);
                         } else {
-                            counter += 3;
+                            counter += 5;
                             updateProgress(counter);
                         }
                     }
                 };
                 xhr2.send();
-            }, 10000);
+            }, 20000);
         }
     };
     xhr.send();
