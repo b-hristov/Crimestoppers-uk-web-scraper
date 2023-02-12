@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from time import sleep
 
+from pymongo import MongoClient
 from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains
@@ -12,7 +13,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
-from pymongo import MongoClient
 
 # Connect to MongoDB
 mongodb_uri = os.environ.get("MONGODB_URI")

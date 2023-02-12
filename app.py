@@ -31,6 +31,7 @@ date_time_last_update = ""
 @app.route('/', methods=['GET'])
 def render_all_persons_data():
     global date_time_last_update
+    global scraping_in_progress
     all_documents_in_collection = collection.find({}, {'_id': 0})
 
     items = list(all_documents_in_collection)
@@ -47,7 +48,8 @@ def render_all_persons_data():
         page=page,
         pages=pages,
         total_entries=total_entries,
-        last_update=date_time_last_update
+        last_update=date_time_last_update,
+        scraping_progress=scraping_in_progress
     )
 
 
