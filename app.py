@@ -4,7 +4,6 @@ from datetime import datetime
 from math import ceil
 from threading import Thread
 
-import boto3
 from flask import *
 from pymongo import MongoClient
 
@@ -14,13 +13,9 @@ app = Flask(__name__, static_folder="static")
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = MongoClient(mongodb_uri)
 db = client["scraped_data"]
-collection = db["wanted-persons"]
+collection = db["wanted_persons"]
 
-# Connect to AWS S3
-s3 = boto3.client("s3")
-bucket = "scraped-data-most-wanted"
-file_name = "scraped_data.json"
-
+# Access tokens for the API
 token_1 = os.environ.get("TOKEN_1")
 token_2 = os.environ.get("TOKEN_2")
 token_3 = os.environ.get("TOKEN_3")
@@ -73,6 +68,8 @@ def get_all_persons_data():
         return {"Error": "Invalid authentication token!"}
     json_data = collection.find({}, {'_id': 0})
     items = list(json_data)
+    if not items:
+        return {"Message": "No wanted persons found!"}
     return {"Count": len(items), "Entries": items}
 
 
@@ -103,14 +100,6 @@ def run_scraper():
     global date_time_last_update
     scraping_in_progress = True
     subprocess.run(['python', 'crimestoppers_uk_scraper.py'])
-
-    obj = s3.get_object(Bucket=bucket, Key=file_name)
-    file_content = obj["Body"].read().decode("utf-8")
-    wanted_persons = json.loads(file_content)
-
-    # Delete old data in collection and insert the new one
-    collection.drop()
-    collection.insert_many(wanted_persons)
 
     scraping_in_progress = False
     date_and_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

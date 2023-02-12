@@ -1,10 +1,8 @@
-import json
 import os
 import re
 from datetime import datetime
 from time import sleep
 
-import boto3
 from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains
@@ -14,6 +12,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
+from pymongo import MongoClient
+
+# Connect to MongoDB
+mongodb_uri = os.environ.get("MONGODB_URI")
+client = MongoClient(mongodb_uri)
+db = client["scraped_data"]
+collection = db["wanted_persons"]
 
 start_time = datetime.now()
 
@@ -138,15 +143,9 @@ for page_index in range(len(all_pages)):
 progress_bar.close()
 driver.quit()
 
-# Store the collected data into JSON file
-with open("scraped_data.json", "w") as scraped_data:
-    json.dump(final_result, scraped_data)
-
-# Load the JSON in AWS S3
-s3 = boto3.client("s3")
-bucket = "scraped-data-most-wanted"
-file_name = "scraped_data.json"
-s3.upload_file(file_name, bucket, file_name)
+# Load the data in MongoDB after the scraper finishes
+collection.drop()
+collection.insert_many(final_result)
 
 end_time = datetime.now()
 print(f'Execution time: {(end_time - start_time)}')
