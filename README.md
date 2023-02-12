@@ -4,7 +4,6 @@
 
 ## Description:
 - Scraper created with Selenium Webdriver
-- Stores the collected files in AWS S3
 - Uses MongoDB for database
 - Main app uses Flask and Jinja2 to render the collected data in the website
 - Deployed to Heroku cloud platform
