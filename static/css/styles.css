@@ -14,6 +14,11 @@ h1 img:hover {
     transform: translateY(-3px);
 }
 
+.btn:hover {
+    transform: translateY(5px);
+    transition: all 0.5s ease;
+}
+
 td {
     min-width: 100px;
     max-width: 300px;

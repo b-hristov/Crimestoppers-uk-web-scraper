@@ -16,7 +16,9 @@
             <img src="/static/logo.png" alt="logo">
         </a>
     </h1>
-    <div id="buttons" class="{% if scraper_in_progress %}hidden{% endif %}">
+
+    {% if not scraper_in_progress %}
+    <div id="buttons">
         <div id="scr-btn">
             <button class="btn btn-outline-success" id="run-scraper-button" type="button"><b>Update entries</b>
             </button>
@@ -28,10 +30,12 @@
             </button>
         </div>
     </div>
+    {% endif %}
+
 </header>
 <div class="container" style="width: 70%;">
 
-    {% if last_update_message %}
+    {% if total_entries %}
         <p id="count">Total entries found:
             <b>{{ total_entries }}</b>
         </p>

@@ -24,8 +24,10 @@ $("#run-scraper-button").on("click", function () {
                             location.reload();
                         }, 1000);
                     } else {
-                        counter += 5;
-                        updateProgress(counter);
+                        if (counter < 100) {
+                            counter += 5;
+                            updateProgress(counter);
+                        }
                     }
                 });
             }, 20000);
