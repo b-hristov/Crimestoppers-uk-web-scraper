@@ -9,11 +9,16 @@ from pymongo import MongoClient
 
 app = Flask(__name__, static_folder="static")
 
-# Connect to MongoDB
+# Connect to MongoDB and set collections
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = MongoClient(mongodb_uri)
 db = client["scraped_data"]
 collection = db["wanted_persons"]
+
+global_vars_collection = db["globals"]
+global_vars = {"scraper_in_progress": False, "last_update_message": ""}
+if not global_vars_collection.find_one({}):
+    global_vars_collection.insert_one(global_vars)
 
 # Access tokens for the API
 token_1 = os.environ.get("TOKEN_1")
@@ -24,19 +29,17 @@ token_5 = os.environ.get("TOKEN_5")
 AVAILABLE_TOKENS = [token_1, token_2, token_3, token_4, token_5]
 ENTRIES_PER_PAGE = 10
 
-scraper_in_progress = False
-last_update_message = ""
-
 
 @app.route('/', methods=['GET'])
 def render_all_persons_data():
-    global last_update_message
-    global scraper_in_progress
-    all_documents_in_collection = collection.find({}, {'_id': 0})
+    globals_vars = global_vars_collection.find_one({})
+    scraper_in_progress = globals_vars["scraper_in_progress"]
+    last_update_message = globals_vars["last_update_message"]
+    all_entries_in_db = collection.find({}, {'_id': 0})
 
-    items = list(all_documents_in_collection)
+    items = list(all_entries_in_db)
     total_entries = len(items)
-    print(f"Total documents in collection: {total_entries}")
+    print(f"Total entries: {total_entries}")
     page = int(request.args.get('page', 1))
     pages = ceil(total_entries / ENTRIES_PER_PAGE)
     start = (page - 1) * ENTRIES_PER_PAGE
@@ -55,8 +58,8 @@ def render_all_persons_data():
 
 @app.route('/<string:name>/', methods=['GET'])
 def render_person_data(name):
-    all_documents_in_collection = collection.find({}, {'_id': 0})
-    for person in all_documents_in_collection:
+    all_entries_in_db = collection.find({}, {'_id': 0})
+    for person in all_entries_in_db:
         if name in person:
             return render_template('criminal.html', json_data=person[name])
 
@@ -98,14 +101,14 @@ def search_for_person():
 
 
 def run_scraper():
-    global scraper_in_progress
-    global last_update_message
-    scraper_in_progress = True
+    # Scraping started
+    global_vars_collection.update_one({}, {"$set": {"scraper_in_progress": True}})
     subprocess.run(['python', 'crimestoppers_uk_scraper.py'])
 
-    scraper_in_progress = False
+    # Scraping finished
+    global_vars_collection.update_one({}, {"$set": {"scraper_in_progress": False}})
     date_and_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    last_update_message = f"Last update: {date_and_time} (UTC+2)"
+    global_vars_collection.update_one({}, {"$set": {"last_update_message": f"Last update: {date_and_time} (UTC+2)"}})
 
 
 @app.route("/run_scraper/", methods=["POST"])
@@ -116,6 +119,8 @@ def start_scraping():
 
 @app.route("/check_scraper_status/", methods=["GET"])
 def check_scraper_status():
+    globals_values = global_vars_collection.find_one({})
+    scraper_in_progress = globals_values["scraper_in_progress"]
     return jsonify({"scraping_in_progress": scraper_in_progress})
 
 
