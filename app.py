@@ -24,14 +24,14 @@ token_5 = os.environ.get("TOKEN_5")
 AVAILABLE_TOKENS = [token_1, token_2, token_3, token_4, token_5]
 ENTRIES_PER_PAGE = 10
 
-scraping_in_progress = False
-date_time_last_update = ""
+scraper_in_progress = False
+last_update_message = ""
 
 
 @app.route('/', methods=['GET'])
 def render_all_persons_data():
-    global date_time_last_update
-    global scraping_in_progress
+    global last_update_message
+    global scraper_in_progress
     all_documents_in_collection = collection.find({}, {'_id': 0})
 
     items = list(all_documents_in_collection)
@@ -48,8 +48,8 @@ def render_all_persons_data():
         page=page,
         pages=pages,
         total_entries=total_entries,
-        last_update=date_time_last_update,
-        scraping_progress=scraping_in_progress
+        last_update_message=last_update_message,
+        scraper_in_progress=scraper_in_progress
     )
 
 
@@ -98,14 +98,14 @@ def search_for_person():
 
 
 def run_scraper():
-    global scraping_in_progress
-    global date_time_last_update
-    scraping_in_progress = True
+    global scraper_in_progress
+    global last_update_message
+    scraper_in_progress = True
     subprocess.run(['python', 'crimestoppers_uk_scraper.py'])
 
-    scraping_in_progress = False
+    scraper_in_progress = False
     date_and_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    date_time_last_update = date_and_time
+    last_update_message = f"Last update: {date_and_time} (UTC+2)"
 
 
 @app.route("/run_scraper/", methods=["POST"])
@@ -116,7 +116,7 @@ def start_scraping():
 
 @app.route("/check_scraper_status/", methods=["GET"])
 def check_scraper_status():
-    return jsonify({"scraping_in_progress": scraping_in_progress})
+    return jsonify({"scraping_in_progress": scraper_in_progress})
 
 
 @app.route('/erase_all_entries/', methods=['POST'])

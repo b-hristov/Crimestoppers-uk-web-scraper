@@ -10,59 +10,22 @@
 
 </head>
 <body>
-<h1 class="text-primary text-uppercase font-weight-bold">Crime stoppers UK - Wanted persons</h1>
+<header>
+    <h1 class="text-primary text-uppercase font-weight-bold">
+        <a href="{{ url_for('render_all_persons_data') }}">
+            <img src="/static/logo.png" alt="logo">
+        </a>
+    </h1>
+</header>
 <section class="container" style="width: 50%;">
-    <p><b><img alt="Photo URL" src="{{json_data[0]['Photo URL']}}"></b></p>
-    <p><b>Suspect name: </b>{{ json_data[0]['Suspect name'] }}</p>
-    {% if json_data[0]['Sex']: %}
-    <p><b>Sex: </b>{{ json_data[0]['Sex'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Age']: %}
-    <p><b>Age: </b>{{ json_data[0]['Age'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Height']: %}
-    <p><b>Height: </b>{{ json_data[0]['Height'] }}</p>
-    {% endif %}
-    <p><b>Crime type: </b>{{ json_data[0]['Crime type'] }}</p>
-    {% if json_data[0]['Nickname']: %}
-    <p><b>Nickname: </b>{{ json_data[0]['Nickname'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Build']: %}
-    <p><b>{{ "Build: " }}</b>{{ json_data[0]['Build'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Hair type']: %}
-    <p><b>Hair type: </b>{{ json_data[0]['Hair type'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Hair colour']: %}
-    <p><b>Hair colour: </b>{{ json_data[0]['Hair colour'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Facial hair']: %}
-    <p><b>Facial hair: </b>{{ json_data[0]['Facial hair'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Ethnic appearance']: %}
-    <p><b>Ethnic appearance: </b>{{ json_data[0]['Ethnic appearance'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Number of people involved']: %}
-    <p><b>Number of people involved: </b>{{ json_data[0]['Number of people involved'] }}</p>
-    {% endif %}
-    {% if json_data[0]['CS reference']: %}
-    <p><b>CS reference: </b>{{ json_data[0]['CS reference'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Police force']: %}
-    <p><b>Police force: </b>{{ json_data[0]['Police force'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Whereabouts']: %}
-    <p><b>Whereabouts: </b>{{ json_data[0]['Whereabouts'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Summary']: %}
-    <p><b>Summary: </b> {{ json_data[0]['Summary'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Full Details']: %}
-    <p><b>Full Details: </b> {{ json_data[0]['Full Details'] }}</p>
-    {% endif %}
-    {% if json_data[0]['Additional Information']: %}
-    <p><b>Additional Information: </b> {{json_data[0]['Additional Information']}}</p>
-    {% endif %}
+    <p><b><img alt="Photo URL" src="{{ json_data[0]['Photo URL'] }}"></b></p>
+
+    {% for key, value in json_data[0].items() %}
+        {% if key != 'Photo URL' %}
+            <p><b>{{ key }}: </b>{{ value }}</p>
+        {% endif %}
+    {% endfor %}
+
 </section>
 </body>
 </html>

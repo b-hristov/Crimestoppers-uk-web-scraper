@@ -1,6 +1,22 @@
 h1 {
-    text-align: center;
-    color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 img {
+    width: 780.5px;
+    height: 52.5px;
+    transition: all 0.3s ease;
+}
+
+h1 img:hover {
+    transform: translateY(-3px);
+}
+
+td {
+    min-width: 100px;
+    max-width: 300px;
 }
 
 .headings-style {
@@ -54,4 +70,3 @@ div p {
     background-color: green;
     transition: width 0.5s ease-in-out;
 }
-
