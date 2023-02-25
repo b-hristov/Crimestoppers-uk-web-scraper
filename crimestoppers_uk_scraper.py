@@ -5,7 +5,7 @@ from time import sleep
 
 from pymongo import MongoClient
 from selenium import webdriver
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, ElementNotInteractableException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -43,10 +43,8 @@ except TimeoutException:
     pass
 
 # Get the total number of pages with entries
-all_pages = driver.find_elements(
-    By.XPATH,
-    "//body/form[1]/div[1]/main[1]/article[1]/div[3]/div[2]/div[1]/div[1]/nav[1]/ul[1]/li"
-)
+all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
+
 progress_bar = tqdm(total=len(all_pages), desc='Scraping pages')
 
 
@@ -59,10 +57,8 @@ def load_list_items_into_dict(list_items):
 
 for page_index in range(len(all_pages)):
     # Get the elements in each iteration to avoid stale element exception
-    all_pages = driver.find_elements(
-        By.XPATH,
-        "//body/form[1]/div[1]/main[1]/article[1]/div[3]/div[2]/div[1]/div[1]/nav[1]/ul[1]/li"
-    )
+    all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
+
     # Click on each element
     driver.fullscreen_window()
     actions.move_to_element(all_pages[page_index]).perform()
@@ -70,28 +66,22 @@ for page_index in range(len(all_pages)):
     sleep(1)
 
     # Get the total entries per page
-    all_urls = driver.find_elements(
-        By.XPATH,
-        '//body/form[1]/div[1]/main[1]/article[1]/div[3]/div[1]/div[2]//div[1]/div[1]/figure[1]/a[1]'
-    )
+    all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
 
     for entry_index in range(len(all_urls)):
         # Get the elements in each iteration to avoid stale element exception
-        all_urls = driver.find_elements(
-            By.XPATH,
-            '//body/form[1]/div[1]/main[1]/article[1]/div[3]/div[1]/div[2]//div[1]/div[1]/figure[1]/a[1]'
-        )
+        all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
+
         # Click on each element
-        actions.move_to_element(all_urls[entry_index]).perform()
-        all_urls[entry_index].click()
-        sleep(1)
+        try:
+            actions.move_to_element(all_urls[entry_index]).perform()
+            all_urls[entry_index].click()
+            driver.fullscreen_window()
+        except ElementNotInteractableException:
+            continue
 
         # Start scraping the elements
-        image_url = driver.find_element(
-            By.XPATH,
-            "//body/div[@id='main']/main[1]/article[1]/div[2]/div[1]"
-            "/div[1]/div[1]/div[1]/div[1]/div[1]/figure[1]/img[1]"
-        ).get_attribute('src')
+        image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
 
         all_content = driver.find_element(
             By.XPATH,
@@ -136,6 +126,7 @@ for page_index in range(len(all_pages)):
         final_result.append(person_data)
 
         driver.back()
+        driver.fullscreen_window()
 
     progress_bar.update(1)
     driver.back()
@@ -148,5 +139,5 @@ collection.drop()
 collection.insert_many(final_result)
 
 end_time = datetime.now()
-print(f'Execution time: {(end_time - start_time)}')
+print(f'Execution time: {str(end_time - start_time).split(".")[0]}')
 print(f'Collected entries:\n------------------\n{len(final_result)}')
