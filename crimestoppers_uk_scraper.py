@@ -1,11 +1,10 @@
 import os
 import re
 from datetime import datetime
-from time import sleep
 
 from pymongo import MongoClient
 from selenium import webdriver
-from selenium.common import TimeoutException, ElementNotInteractableException
+from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -68,33 +67,36 @@ for page_index in range(len(all_pages)):
     all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
 
     for entry_index in range(len(all_urls)):
-        # Get the elements in each iteration to avoid stale element exception
-        all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
-
         # Click on each element
         try:
+            all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
             actions.move_to_element(all_urls[entry_index]).perform()
             all_urls[entry_index].click()
-        except ElementNotInteractableException:
+        except Exception:
             continue
 
-        # Start scraping the elements
-        image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
+        # Wait until elements are visible and start scraping them
+        try:
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "main")))
 
-        all_content = driver.find_element(
-            By.XPATH,
-            "//body/div[@id='main']/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]"
-        ).text
+            image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
 
-        list_of_intro_row_elements = [el.text for el in driver.find_elements(
-            By.XPATH,
-            "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/ul[1]/li"
-        )]
+            all_content = driver.find_element(
+                By.XPATH,
+                "//body/div[@id='main']/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]"
+            ).text
 
-        list_of_description_elements = [el.text for el in driver.find_elements(
-            By.XPATH,
-            "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li"
-        )]
+            list_of_intro_row_elements = [el.text for el in driver.find_elements(
+                By.XPATH,
+                "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/ul[1]/li"
+            )]
+
+            list_of_description_elements = [el.text for el in driver.find_elements(
+                By.XPATH,
+                "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li"
+            )]
+        except TimeoutException:
+            continue
 
         # Create dict to store all scraped info
         all_info_for_person = {
