@@ -1,7 +1,5 @@
 # Simple Flask web application with a scraper functionality
 
-## **[Website URL](https://crimestoppers-uk-most-wanted.herokuapp.com/ "Website URL")**
-
 ## Description:
 - Scraper created with Selenium Webdriver
 - Uses MongoDB for database
