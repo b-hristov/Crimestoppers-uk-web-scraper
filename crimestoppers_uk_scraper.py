@@ -26,6 +26,7 @@ options = Options()
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
+options.add_argument('--start-maximized')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--no-sandbox')
 
@@ -60,10 +61,8 @@ for page_index in range(len(all_pages)):
     all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
 
     # Click on each element
-    driver.fullscreen_window()
     actions.move_to_element(all_pages[page_index]).perform()
     all_pages[page_index].click()
-    sleep(1)
 
     # Get the total entries per page
     all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
@@ -76,7 +75,6 @@ for page_index in range(len(all_pages)):
         try:
             actions.move_to_element(all_urls[entry_index]).perform()
             all_urls[entry_index].click()
-            driver.fullscreen_window()
         except ElementNotInteractableException:
             continue
 
@@ -126,7 +124,6 @@ for page_index in range(len(all_pages)):
         final_result.append(person_data)
 
         driver.back()
-        driver.fullscreen_window()
 
     progress_bar.update(1)
     driver.back()
