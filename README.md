@@ -61,7 +61,7 @@ Sample request:
 ```json
 {
     "token": "<token>",
-    "SOI": "<name>"
+    "name": "<name>"
 }
 ```
 

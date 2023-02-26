@@ -32,9 +32,8 @@ ENTRIES_PER_PAGE = 10
 
 @app.route('/', methods=['GET'])
 def render_all_persons_data():
-    globals_vars = global_vars_collection.find_one({})
-    scraper_in_progress = globals_vars["scraper_in_progress"]
-    last_update_message = globals_vars["last_update_message"]
+    scraper_in_progress = global_vars_collection.find_one({})["scraper_in_progress"]
+    last_update_message = global_vars_collection.find_one({})["last_update_message"]
     all_entries_in_db = collection.find({}, {'_id': 0})
 
     items = list(all_entries_in_db)
@@ -58,10 +57,9 @@ def render_all_persons_data():
 
 @app.route('/<string:name>/', methods=['GET'])
 def render_person_data(name):
-    all_entries_in_db = collection.find({}, {'_id': 0})
-    for person in all_entries_in_db:
-        if name in person:
-            return render_template('criminal.html', json_data=person[name])
+    query = {f"{name}.Suspect name": name}
+    person_info = collection.find_one(query)
+    return render_template('criminal.html', json_data=person_info[name])
 
 
 @app.route('/api/wanted-persons/', methods=['POST'])
@@ -70,34 +68,39 @@ def get_all_persons_data():
     auth_token = data.get('token')
 
     if auth_token not in AVAILABLE_TOKENS:
-        return {"Error": "Invalid authentication token!"}
+        return {"Error": "Invalid authentication token!"}, 401
+
     json_data = collection.find({}, {'_id': 0})
     items = list(json_data)
     if not items:
-        return {"Message": "No wanted persons found!"}
-    return {"Count": len(items), "Entries": items}
+        return {"Message": "No wanted persons found!"}, 200
+    return {"Count": len(items), "Entries": items}, 200
 
 
 @app.route('/api/wanted-persons/search/', methods=['POST'])
 def search_for_person():
     data = request.get_json()
     auth_token = data.get('token')
-    soi = data.get('SOI')
+    subject_of_inquiry = data.get('name')
     json_data = collection.find({}, {'_id': 0})
 
+    if len(data) <= 1:
+        return {"Error": "Missing required parameters!"}, 400
     if auth_token not in AVAILABLE_TOKENS:
-        return {"Error": "Invalid authentication token!"}
+        return {"Error": "Invalid authentication token!"}, 401
+    if not subject_of_inquiry:
+        return {"Error": f"Incorrect parameter '{list(data.keys())[1]}'!"}, 400
 
     results = []
     for person in json_data:
-        # Convert names to lowercase to optimize the search
+        # Convert names to lowercase for a broader search
         converted_name = [k.lower() for k in person.keys()][0]
-        if soi.lower() in converted_name:
+        if subject_of_inquiry.lower() in converted_name:
             results.append(person)
 
     if results:
         return {"Entries found": results}
-    return {"Message": "SOI not found!"}
+    return {"Message": "Subject of inquiry not found!"}, 200
 
 
 def run_scraper():
@@ -114,20 +117,19 @@ def run_scraper():
 @app.route("/run_scraper/", methods=["POST"])
 def start_scraping():
     Thread(target=run_scraper).start()
-    return "Scraping started."
+    return "Scraping started.", 200
 
 
 @app.route("/check_scraper_status/", methods=["GET"])
 def check_scraper_status():
-    globals_values = global_vars_collection.find_one({})
-    scraper_in_progress = globals_values["scraper_in_progress"]
-    return jsonify({"scraping_in_progress": scraper_in_progress})
+    scraper_in_progress = global_vars_collection.find_one({})["scraper_in_progress"]
+    return jsonify({"scraping_in_progress": scraper_in_progress}), 200
 
 
 @app.route('/erase_all_entries/', methods=['POST'])
 def erase_all_entries():
     collection.drop()
-    return "Successfully deleted all entries."
+    return "Successfully deleted all entries.", 200
 
 
 if __name__ == "__main__":

@@ -3,37 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Crime stoppers UK - Wanted persons</title>
-    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
     <link href="/static/favicon.ico" rel="shortcut icon">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <header>
-    <h1 class="text-primary text-uppercase font-weight-bold">
-        <a href="{{ url_for('render_all_persons_data') }}">
-            <img src="/static/logo.png" alt="logo">
-        </a>
-    </h1>
-
-    {% if not scraper_in_progress %}
-    <div id="buttons">
-        <div id="scr-btn">
-            <button class="btn btn-outline-success" id="run-scraper-button" type="button"><b>Update entries</b>
-            </button>
-        </div>
-        <div id="del-btn">
-            <button class="btn btn-outline-danger {% if not json_data %}hidden{% endif %}"
-                    id="erase-all-entries"
-                    type="button"><b>Erase all entries</b>
-            </button>
-        </div>
-    </div>
-    {% endif %}
-
+    <a href="{{ url_for('render_all_persons_data') }}">
+        <img src="/static/logo.png" alt="logo">
+    </a>
 </header>
-<div class="container" style="width: 70%;">
+
+{% if not scraper_in_progress %}
+    <div id="buttons">
+        <button class="scr-btn" id="run-scraper-button" type="button"><b>Update entries</b>
+        </button>
+        <button class="del-btn {% if not json_data %}hidden{% endif %}"
+                id="erase-all-entries"
+                type="button"><b>Erase all entries</b>
+        </button>
+    </div>
+{% endif %}
+
+<div class="messages">
+    <p id="loading-message" class="hidden">Collecting data, please wait.</p>
+    <div id="progress-bar" class="hidden">
+        <div class="progress-bar-filled" id="progress-bar-fill"></div>
+    </div>
 
     {% if total_entries %}
         <p id="count">Total entries found:
@@ -42,12 +38,10 @@
         <p id="datetime"><b>{{ last_update_message }}</b>
         </p>
     {% endif %}
+</div>
 
-    <p id="loading-message" class="hidden">Collecting data, please wait.</p>
-    <div id="progress-bar" class="hidden">
-        <div class="progress-bar-filled" id="progress-bar-fill"></div>
-    </div>
-    <table class="table {% if not json_data %}hidden{% endif %}" id="scraped-content" style="text-align: center;">
+<div class="container">
+    <table class="table {% if not json_data %}hidden{% endif %}">
         <thead>
         <tr class="headings-style">
             <th>Suspect photo</th>
@@ -63,30 +57,71 @@
         {% for person in json_data %}
             {% for key, value in person.items() %}
                 <tr>
-                <td><img alt="Photo URL" src="{{ value[0]['Photo URL'] }}" style="width: 100px; height: 100px;"></td>
-                <td>{{ key }}</td>
-                <td>{{ value[0]['Sex'] }}</td>
-                <td>{{ value[0]['Age'] }}</td>
-                <td>{{ value[0]['Crime type'] }}</td>
-                <td><a class="btn btn-outline-primary" href="/{{ key }}/" role="button"><b>Click here</b></a></td>
+                    <td><img alt="Photo URL" src="{{ value[0]['Photo URL'] }}" style="width: 80px; height: 80px;"></td>
+                    <td>{{ key }}</td>
+                    <td>{{ value[0]['Sex'] }}</td>
+                    <td>{{ value[0]['Age'] }}</td>
+                    <td>{{ value[0]['Crime type'] }}</td>
+                    <td><a href="/{{ key }}/">
+                        <button class="more-info" type="button"><b>Click here</b></button>
+                    </a></td>
+                </tr>
             {% endfor %}
         {% endfor %}
 
         </tbody>
     </table>
-    <br>
-    <ul class="pagination">
+</div>
+<ul class="pagination">
 
+    {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page - 1 }}">Previous</a>
+        </li>
+    {% endif %}
+
+    {% if pages <= 10 %}
         {% for i in range(1, pages + 1) %}
             <li class="page-item {% if i == page %} active {% endif %}">
                 <a class="page-link" href="?page={{ i }}">{{ i }}</a>
             </li>
         {% endfor %}
+    {% else %}
+        {% if page <= 5 %}
+            {% for i in range(1, 11) %}
+                <li class="page-item {% if i == page %} active {% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% elif page >= pages - 4 %}
+            {% for i in range(pages - 9, pages + 1) %}
+                <li class="page-item {% if i == page %} active {% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            {% for i in range(page - 5, page + 5) %}
+                <li class="page-item {% if i == page %} active {% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
 
-    </ul>
-    <br>
-    <br>
-</div>
+    {% if page < pages %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page + 1 }}">Next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ pages }}">Last</a>
+        </li>
+    {% endif %}
+
+</ul>
+
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

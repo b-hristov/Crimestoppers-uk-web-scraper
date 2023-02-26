@@ -1,17 +1,29 @@
-h1 {
+body {
+    font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+}
+
+header {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-h1 img {
-    width: 780.5px;
-    height: 52.5px;
-    transition: all 0.3s ease;
+header img {
+    width: 780px;
+    height: 52px;
 }
 
-h1 img:hover {
-    transform: translateY(-3px);
+th {
+    background-color: #c2deee;
+    border-top: 2px solid #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+    height: 50px;
+}
+
+th, td {
+    border-top: 2px solid #dee2e6;
+    width: 300px;
+    height: 70px;
 }
 
 .btn:hover {
@@ -20,6 +32,7 @@ h1 img:hover {
 }
 
 td {
+    padding: 0.75rem;
     min-width: 100px;
     max-width: 300px;
 }
@@ -38,20 +51,67 @@ div p {
     text-align: center;
 }
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.table {
+    border-collapse: collapse;
+    text-align: center;
+    /*margin-bottom: 20px;*/
+}
+
+.messages {
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
 #buttons {
-    margin: 10px;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#scr-btn {
-    margin-right: 10px;
+.scr-btn {
+    margin-right: 20px;
+    background-color: transparent;
+    border: 1px solid #28a745;
+    color: #28a745;
+    padding: 6px 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
 }
 
-#del-btn {
-    margin-left: 10px;
+.scr-btn:hover {
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+}
+
+.del-btn {
+    margin-left: 20px;
+    background-color: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 6px 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+}
+
+.del-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
+    cursor: pointer;
 }
 
 #count {
@@ -60,6 +120,39 @@ div p {
 
 .hidden {
     display: none;
+}
+
+.person-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto 20px;
+    padding: 30px;
+    background-color: #c2deee;
+    border-radius: 30px;
+    width: 50%;
+}
+
+.back-btn {
+    display: block;
+    padding: 6px 12px;
+    margin: auto auto 20px;
+    background-color: transparent;
+    font-size: 1rem;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+}
+
+.back-btn:hover {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+div > a {
+    text-decoration: none;
 }
 
 #progress-bar {
@@ -75,3 +168,57 @@ div p {
     background-color: green;
     transition: width 0.5s ease-in-out;
 }
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination li {
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.pagination li.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+
+}
+
+.pagination li a {
+    color: black;
+    display: block;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.pagination li.active a {
+    color: #fff;
+}
+
+.pagination li:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.more-info {
+    background-color: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 6px 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+}
+
+.more-info:hover {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+

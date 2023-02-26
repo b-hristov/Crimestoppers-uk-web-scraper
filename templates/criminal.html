@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Crime stoppers UK - Wanted persons</title>
-    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
     <link href="/static/favicon.ico" rel="shortcut icon">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
 <body>
 <header>
-    <h1 class="text-primary text-uppercase font-weight-bold">
-        <a href="{{ url_for('render_all_persons_data') }}">
-            <img src="/static/logo.png" alt="logo">
-        </a>
-    </h1>
+    <a href="{{ url_for('render_all_persons_data') }}">
+        <img src="/static/logo.png" alt="logo">
+    </a>
 </header>
-<section class="container" style="width: 50%;">
+<div>
+    <a href="{{ url_for('render_all_persons_data') }}">
+        <button class="back-btn" type="button"><i class="fa-regular fa-circle-left"></i> <b>Go back</b></button>
+    </a>
+</div>
+<section class="person-info">
     <p><b><img alt="Photo URL" src="{{ json_data[0]['Photo URL'] }}"></b></p>
 
     {% for key, value in json_data[0].items() %}
