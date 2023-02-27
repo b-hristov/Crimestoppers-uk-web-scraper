@@ -50,7 +50,7 @@ progress_bar = tqdm(total=len(all_pages), desc='Scraping pages')
 
 def load_list_items_into_dict(list_items):
     for el in list_items:
-        key, value = el.split(":")
+        key, value = el.split(":", 1)
         if value.strip() != "" and value.strip() != "N/A":
             all_info_for_person[key] = value.strip()
 
@@ -67,6 +67,9 @@ for page_index in range(len(all_pages)):
     all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
 
     for entry_index in range(len(all_urls)):
+        # Create dict to store all scraped info
+        all_info_for_person = {}
+
         # Click on each element
         try:
             all_urls = driver.find_elements(By.XPATH, '//figure[1]/a[1]')
@@ -78,30 +81,30 @@ for page_index in range(len(all_pages)):
         # Wait until elements are visible and start scraping them
         try:
             WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "main")))
-
-            image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
-
-            all_content = driver.find_element(
-                By.XPATH,
-                "//body/div[@id='main']/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]"
-            ).text
-
-            list_of_intro_row_elements = [el.text for el in driver.find_elements(
-                By.XPATH,
-                "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/ul[1]/li"
-            )]
-
-            list_of_description_elements = [el.text for el in driver.find_elements(
-                By.XPATH,
-                "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li"
-            )]
         except TimeoutException:
             continue
 
-        # Create dict to store all scraped info
-        all_info_for_person = {
-            "Photo URL": image_url
-        }
+        try:
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, "//figure[1]/img[1]")))
+            image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
+            all_info_for_person["Photo URL"] = image_url
+        except TimeoutException:
+            pass
+
+        all_content = driver.find_element(
+            By.XPATH,
+            "//body/div[@id='main']/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]"
+        ).text
+
+        list_of_intro_row_elements = [el.text for el in driver.find_elements(
+            By.XPATH,
+            "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/ul[1]/li"
+        )]
+
+        list_of_description_elements = [el.text for el in driver.find_elements(
+            By.XPATH,
+            "//body[1]/div[1]/main[1]/article[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li"
+        )]
 
         load_list_items_into_dict(list_of_intro_row_elements)
         load_list_items_into_dict(list_of_description_elements)
