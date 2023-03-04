@@ -30,7 +30,7 @@ $("#run-scraper-button").on("click", function () {
                         }
                     }
                 });
-            }, 20000);
+            }, 10000);
         }
     });
 });
