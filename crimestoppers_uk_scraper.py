@@ -108,22 +108,26 @@ def start_scraping(url):
     load_list_items_into_dict(description_elements)
 
     summary = re.search("Summary(.+?)Full Details", all_content, re.DOTALL).group(1)
-    all_info_for_person["Summary"] = summary
+    all_info_for_person["Summary"] = summary.strip()
     full_details = re.search("Full Details(.+?)Suspect description", all_content, re.DOTALL).group(1)
-    all_info_for_person["Full Details"] = full_details
+    all_info_for_person["Full Details"] = full_details.strip()
 
     # Handle the missing Additional information for some entries
     try:
         add_info = re.search("Additional Information(.+?)Recognise", all_content, re.DOTALL).group(1)
-        if add_info:
-            all_info_for_person["Additional Information"] = add_info
+        all_info_for_person["Additional Information"] = add_info.strip()
     except AttributeError:
         pass
 
+    # Check if there are forward slashes in the name
+    if "/" in all_info_for_person["Suspect name"]:
+        all_info_for_person["Suspect name"] = all_info_for_person.get("Suspect name").replace("/", "-")
+
     # Create dict with the name of the person as a key and append it to the final result
     person_data = {
-        all_info_for_person["Suspect name"]: [all_info_for_person]
+        all_info_for_person["Suspect name"]: all_info_for_person
     }
+
     final_result.append(person_data)
     progress_bar.update(1)
 

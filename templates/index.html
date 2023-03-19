@@ -57,11 +57,11 @@
         {% for person in json_data %}
             {% for key, value in person.items() %}
                 <tr>
-                    <td><img alt="Photo URL" src="{{ value[0]['Photo URL'] }}" style="width: 80px; height: 80px;"></td>
+                    <td><img alt="Photo URL" src="{{ value['Photo URL'] }}" style="width: 80px; height: 80px;"></td>
                     <td>{{ key }}</td>
-                    <td>{{ value[0]['Sex'] }}</td>
-                    <td>{{ value[0]['Age'] }}</td>
-                    <td>{{ value[0]['Crime type'] }}</td>
+                    <td>{{ value['Sex'] }}</td>
+                    <td>{{ value['Age'] }}</td>
+                    <td>{{ value['Crime type'] }}</td>
                     <td><a href="/{{ key }}/">
                         <button class="more-info" type="button"><b>Click here</b></button>
                     </a></td>
