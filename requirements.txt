@@ -1,8 +1,6 @@
-Flask==2.2.2
+Flask==2.3.2
 flask-paginate==2022.1.8
 Jinja2==3.1.2
 pymongo==4.3.3
-selenium==4.8.0
-tqdm==4.64.1
-virtualenv==20.19.0
-boto3
+selenium==4.9.1
+tqdm==4.65.0
