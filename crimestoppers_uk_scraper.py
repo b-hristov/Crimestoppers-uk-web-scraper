@@ -42,17 +42,17 @@ except TimeoutException:
     pass
 
 # Get the total number of pages with entries
-all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
+all_pages_list = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
 
 all_entries_urls = []
 
 
-def get_all_entries_urls(all_pages):
+def get_all_entries_urls(pages):
     # Get the elements in each iteration to avoid stale element exception
-    for page_index in range(len(all_pages)):
-        all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
+    for page_index in range(len(pages)):
+        pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
         # Click on each page item
-        all_pages[page_index].click()
+        pages[page_index].click()
         entries_on_page = driver.find_elements(
             By.XPATH,
             '//body/form[1]/div[1]/main[1]/article[1]/div[3]/div[1]/div[2]/div/div[1]/div[1]/a[1]'
@@ -60,7 +60,7 @@ def get_all_entries_urls(all_pages):
         all_entries_urls.extend([(el.get_attribute("href")) for el in entries_on_page])
 
 
-get_all_entries_urls(all_pages)
+get_all_entries_urls(all_pages_list)
 
 progress_bar = tqdm(total=len(all_entries_urls), desc='Scraping entries')
 
@@ -76,7 +76,6 @@ def start_scraping(url):
                 person_data[key] = "Unknown"
             else:
                 person_data[key] = value.strip()
-
 
     # Wait until the main content of the page is loaded
     try:
