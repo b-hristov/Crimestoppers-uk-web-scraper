@@ -19,10 +19,10 @@
     </a>
 </div>
 <section class="person-info">
-    <p><b><img alt="Photo URL" src="{{ json_data['Photo URL'] }}"></b></p>
+    <p><img alt="Photo URL" src="{{ json_data['Photo URL'] }}"></p>
 
     {% for key, value in json_data.items() %}
-        {% if key != 'Photo URL' %}
+        {% if key != 'Photo URL' and value != "Unknown" %}
             <p><b>{{ key }}: </b>{{ value }}</p>
         {% endif %}
     {% endfor %}

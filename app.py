@@ -106,7 +106,10 @@ def search_for_person():
 def run_scraper():
     # Scraping started
     global_vars_collection.update_one({}, {"$set": {"scraper_in_progress": True}})
-    subprocess.run(['python', 'crimestoppers_uk_scraper.py'])
+    process = subprocess.Popen(['python', 'crimestoppers_uk_scraper.py'])
+
+    # Wait for the subprocess to finish
+    process.wait()
 
     # Scraping finished
     global_vars_collection.update_one({}, {"$set": {"scraper_in_progress": False}})

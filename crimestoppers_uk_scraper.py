@@ -19,6 +19,7 @@ db = client["scraped_data"]
 collection = db["wanted_persons"]
 
 start_time = datetime.now()
+print("Getting the total amount of entries to scrape, please wait...")
 
 options = Options()
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -44,7 +45,6 @@ except TimeoutException:
 all_pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
 
 all_entries_urls = []
-print("Getting the total amount of entries to scrape, please wait...")
 
 
 def get_all_entries_urls(all_pages):
@@ -67,13 +67,16 @@ progress_bar = tqdm(total=len(all_entries_urls), desc='Scraping entries')
 
 def start_scraping(url):
     driver.get(url)
-    all_info_for_person = {}
+    person_data = {}
 
     def load_list_items_into_dict(list_items):
         for el in list_items:
             key, value = el.split(":", 1)
-            if value.strip() != "" and value.strip() != "N/A":
-                all_info_for_person[key] = value.strip()
+            if value.strip() == "" or value.strip() == "N/A":
+                person_data[key] = "Unknown"
+            else:
+                person_data[key] = value.strip()
+
 
     # Wait until the main content of the page is loaded
     try:
@@ -85,7 +88,7 @@ def start_scraping(url):
     try:
         WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, "//figure[1]/img[1]")))
         image_url = driver.find_element(By.XPATH, "//figure[1]/img[1]").get_attribute('src')
-        all_info_for_person["Photo URL"] = image_url
+        person_data["Photo URL"] = image_url
     except TimeoutException:
         pass
 
@@ -108,24 +111,24 @@ def start_scraping(url):
     load_list_items_into_dict(description_elements)
 
     summary = re.search("Summary(.+?)Full Details", all_content, re.DOTALL).group(1)
-    all_info_for_person["Summary"] = summary.strip()
+    person_data["Summary"] = summary.strip()
     full_details = re.search("Full Details(.+?)Suspect description", all_content, re.DOTALL).group(1)
-    all_info_for_person["Full Details"] = full_details.strip()
+    person_data["Full Details"] = full_details.strip()
 
     # Handle the missing Additional information for some entries
     try:
         add_info = re.search("Additional Information(.+?)Recognise", all_content, re.DOTALL).group(1)
-        all_info_for_person["Additional Information"] = add_info.strip()
+        person_data["Additional Information"] = add_info.strip()
     except AttributeError:
         pass
 
     # Check if there are forward slashes in the name
-    if "/" in all_info_for_person["Suspect name"]:
-        all_info_for_person["Suspect name"] = all_info_for_person.get("Suspect name").replace("/", "-")
+    if "/" in person_data["Suspect name"]:
+        person_data["Suspect name"] = person_data.get("Suspect name").replace("/", "-")
 
     # Create dict with the name of the person as a key and append it to the final result
     person_data = {
-        all_info_for_person["Suspect name"]: all_info_for_person
+        person_data["Suspect name"]: person_data
     }
 
     final_result.append(person_data)
