@@ -21,12 +21,14 @@ if not global_vars_collection.find_one({}):
     global_vars_collection.insert_one(global_vars)
 
 # Access tokens for the API
-token_1 = os.environ.get("TOKEN_1")
-token_2 = os.environ.get("TOKEN_2")
-token_3 = os.environ.get("TOKEN_3")
-token_4 = os.environ.get("TOKEN_4")
-token_5 = os.environ.get("TOKEN_5")
-AVAILABLE_TOKENS = [token_1, token_2, token_3, token_4, token_5]
+AVAILABLE_TOKENS = {
+    "token_1": os.environ.get("TOKEN_1"),
+    "token_2": os.environ.get("TOKEN_2"),
+    "token_3": os.environ.get("TOKEN_3"),
+    "token_4": os.environ.get("TOKEN_4"),
+    "token_5": os.environ.get("TOKEN_5"),
+}
+
 ENTRIES_PER_PAGE = 10
 
 
@@ -67,7 +69,7 @@ def get_all_persons_data():
     data = request.get_json()
     auth_token = data.get('token')
 
-    if auth_token not in AVAILABLE_TOKENS:
+    if auth_token not in AVAILABLE_TOKENS.values():
         return {"Error": "Invalid authentication token!"}, 401
 
     json_data = collection.find({}, {'_id': 0})
@@ -86,7 +88,7 @@ def search_for_person():
 
     if len(data) <= 1:
         return {"Error": "Missing required parameters!"}, 400
-    if auth_token not in AVAILABLE_TOKENS:
+    if auth_token not in AVAILABLE_TOKENS.values():
         return {"Error": "Invalid authentication token!"}, 401
     if not subject_of_inquiry:
         return {"Error": f"Incorrect parameter '{list(data.keys())[1]}'!"}, 400

@@ -137,6 +137,8 @@ def start_scraping(url):
 for url in all_entries_urls:
     start_scraping(url)
 
+progress_bar.close()
+
 # Load the data in MongoDB after the scraper finishes
 collection.drop()
 collection.insert_many(final_result)
