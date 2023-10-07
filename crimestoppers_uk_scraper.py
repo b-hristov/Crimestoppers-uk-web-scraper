@@ -5,9 +5,9 @@ from time import sleep
 
 from pymongo import MongoClient
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
 from selenium.common import TimeoutException
-# from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,29 +25,29 @@ print("Getting the total amount of entries to scrape, please wait...")
 
 # Use GeckoDriver:
 
-geckodriver_path = os.environ.get("GECKODRIVER_PATH")
-options = Options()
+# geckodriver_path = os.environ.get("GECKODRIVER_PATH")
+# options = Options()
 # options.add_argument('--headless')
-options.add_argument('--start-maximized')
-options.add_argument('--disable-gpu')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--no-sandbox')
-options.add_argument('--width=1920')
-options.add_argument('--height=1080')
-service = Service(executable_path=geckodriver_path)
-driver = webdriver.Firefox(service=service, options=options)
+# options.add_argument('--start-maximized')
+# options.add_argument('--disable-gpu')
+# options.add_argument('--disable-dev-shm-usage')
+# options.add_argument('--no-sandbox')
+# options.add_argument('--width=1920')
+# options.add_argument('--height=1080')
+# service = Service(executable_path=geckodriver_path)
+# driver = webdriver.Firefox(service=service, options=options)
 
 # Use ChromDriver:
 
-# options = Options()
-# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-# options.add_argument('--headless')
-# options.add_argument('--disable-gpu')
-# options.add_argument('--start-maximized')
-# options.add_argument('--disable-dev-shm-usage')
-# options.add_argument('--no-sandbox')
-# service = Service(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
-# driver = webdriver.Chrome(service=service, options=options)
+options = Options()
+options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--start-maximized')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--no-sandbox')
+service = Service(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+driver = webdriver.Chrome(service=service, options=options)
 
 driver.get("https://crimestoppers-uk.org/give-information/most-wanted")
 
