@@ -222,3 +222,14 @@ div > a {
     cursor: pointer;
 }
 
+div.dataTables_wrapper div.dataTables_filter label {
+    font-weight: bold;
+}
+
+.table>thead {
+    vertical-align: middle;
+}
+
+.table>:not(caption)>*>* {
+    background-color: #defaff;
+}

@@ -23,7 +23,11 @@
 
     {% for key, value in json_data.items() %}
         {% if key != 'Photo URL' and value != "Unknown" %}
-            <p><b>{{ key }}: </b>{{ value }}</p>
+            {% if value.startswith("http") %}
+                <p><b>{{ key }}: </b><a href="{{ value }}" target="_blank">{{ value }}</a></p>
+            {% else %}
+                <p><b>{{ key }}: </b>{{ value }}</p>
+            {% endif %}
         {% endif %}
     {% endfor %}
 

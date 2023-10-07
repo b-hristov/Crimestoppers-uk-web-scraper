@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', function () {
+    new DataTable('#data-table');
+});
+
 // Function to update the progress bar
 function updateProgress(percent) {
     $("#progress-bar-fill").css("width", percent + "%");
