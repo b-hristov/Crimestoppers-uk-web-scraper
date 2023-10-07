@@ -1,11 +1,13 @@
 import os
 import re
 from datetime import datetime
+from time import sleep
 
 from pymongo import MongoClient
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from selenium.common import TimeoutException
-from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -21,16 +23,32 @@ collection = db["wanted_persons"]
 start_time = datetime.now()
 print("Getting the total amount of entries to scrape, please wait...")
 
+# Use GeckoDriver:
+
+geckodriver_path = os.environ.get("GECKODRIVER_PATH")
 options = Options()
-options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
+# options.add_argument('--headless')
 options.add_argument('--start-maximized')
+options.add_argument('--disable-gpu')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--no-sandbox')
+options.add_argument('--width=1920')
+options.add_argument('--height=1080')
+service = Service(executable_path=geckodriver_path)
+driver = webdriver.Firefox(service=service, options=options)
 
-service = Service(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
-driver = webdriver.Chrome(service=service, options=options)
+# Use ChromDriver:
+
+# options = Options()
+# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+# options.add_argument('--start-maximized')
+# options.add_argument('--disable-dev-shm-usage')
+# options.add_argument('--no-sandbox')
+# service = Service(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+# driver = webdriver.Chrome(service=service, options=options)
+
 driver.get("https://crimestoppers-uk.org/give-information/most-wanted")
 
 final_result = []
@@ -48,10 +66,12 @@ all_entries_urls = []
 
 
 def get_all_entries_urls(pages):
+    sleep(3)
     # Get the elements in each iteration to avoid stale element exception
     for page_index in range(len(pages)):
         pages = driver.find_elements(By.XPATH, '//li[contains(@class, "page-item")]')
         # Click on each page item
+
         pages[page_index].click()
         entries_on_page = driver.find_elements(
             By.XPATH,
@@ -90,6 +110,8 @@ def start_scraping(url):
         person_data["Photo URL"] = image_url
     except TimeoutException:
         pass
+
+    person_data["Page URL"] = url
 
     all_content = driver.find_element(
         By.XPATH,
@@ -138,6 +160,7 @@ for url in all_entries_urls:
     start_scraping(url)
 
 progress_bar.close()
+driver.quit()
 
 # Load the data in MongoDB after the scraper finishes
 collection.drop()
