@@ -29,7 +29,7 @@ AVAILABLE_TOKENS = {
     "token_5": os.environ.get("TOKEN_5"),
 }
 
-ENTRIES_PER_PAGE = 10
+ENTRIES_PER_PAGE = 500
 
 
 @app.route('/', methods=['GET'])
