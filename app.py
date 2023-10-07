@@ -29,7 +29,7 @@ AVAILABLE_TOKENS = {
     "token_5": os.environ.get("TOKEN_5"),
 }
 
-ENTRIES_PER_PAGE = 500
+ENTRIES_PER_PAGE = 1000
 
 
 @app.route('/', methods=['GET'])
@@ -108,7 +108,7 @@ def search_for_person():
 def run_scraper():
     # Scraping started
     global_vars_collection.update_one({}, {"$set": {"scraper_in_progress": True}})
-    process = subprocess.Popen(['python', 'crimestoppers_uk_scraper.py'])
+    process = subprocess.Popen(['python', 'crimestoppers_scraper_playwright.py'])
 
     # Wait for the subprocess to finish
     process.wait()
@@ -138,5 +138,5 @@ def erase_all_entries():
 
 
 if __name__ == "__main__":
-    port = os.environ.get('PORT', 5000)
+    port = os.environ.get('PORT', 5050)
     app.run(debug=True, host='0.0.0.0', port=port)
