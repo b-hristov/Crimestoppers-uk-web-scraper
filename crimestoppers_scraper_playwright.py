@@ -1,4 +1,5 @@
 import os
+import subprocess
 from datetime import datetime
 
 from playwright.sync_api import sync_playwright
@@ -6,6 +7,8 @@ from pymongo import MongoClient
 from tqdm import tqdm
 import re
 from time import sleep
+
+subprocess.run(["playwright", "install"])
 
 # Connect to MongoDB
 mongodb_uri = os.environ.get("MONGODB_URI")
