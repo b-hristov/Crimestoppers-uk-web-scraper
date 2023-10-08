@@ -40,7 +40,7 @@ def render_all_persons_data():
 
     items = list(all_entries_in_db)
     total_entries = len(items)
-    print(f"Total entries: {total_entries}")
+    print(f"Total entries in DB: {total_entries}")
     page = int(request.args.get('page', 1))
     pages = ceil(total_entries / ENTRIES_PER_PAGE)
     start = (page - 1) * ENTRIES_PER_PAGE
