@@ -1,7 +1,7 @@
 # Simple Flask web application with a scraper functionality
 
 ## Description:
-- Scraper created with Selenium Webdriver
+- Scraper created with Playwright
 - Uses MongoDB for database
 - Main app uses Flask and Jinja2 to render the collected data in the website
 - Deployed to Heroku cloud platform
